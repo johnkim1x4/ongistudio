@@ -17,6 +17,8 @@ FONTS = f"""
 @font-face {{ font-family: "Fraunces Soft"; src: url("{A}/fonts/fraunces-soft-semibold.woff2"); font-weight: 600 700; }}
 @font-face {{ font-family: "Lexend"; src: url("{A}/fonts/lexend-variable.woff2"); font-weight: 100 900; }}
 @font-face {{ font-family: "Jua"; src: url("{A}/fonts/jua-subset.woff2"); }}
+@font-face {{ font-family: "Plex"; src: url("{A}/fonts/IBMPlexSans-Bold-Latin1.woff2"); font-weight: 700; }}
+@font-face {{ font-family: "Plex"; src: url("{A}/fonts/IBMPlexSans-Regular-Latin1.woff2"); font-weight: 400; }}
 html, body {{ margin: 0; width: 1200px; height: 630px; overflow: hidden; }}
 body {{ font-family: "Lexend", sans-serif; -webkit-font-smoothing: antialiased; }}
 """
@@ -34,6 +36,20 @@ h1 {{ font: 650 76px/1.05 "Fraunces Soft"; margin: 18px 0 22px; letter-spacing: 
 p {{ font: 400 30px/1.4 "Lexend"; color: #6a5a4f; margin: 0; }}
 </style>
 <img src="{A}/img/logo.svg"><div><h1 style="margin-top: 40px">Small apps with a little warmth in them.</h1><p>ongistudio.app · <span style="font-family: Jua">온기 스튜디오</span></p></div>""",
+    "splitpeak": f"""
+<style>{FONTS}
+body {{ background: #0c3e37; color: #fff; padding: 80px 0 0 88px; box-sizing: border-box; position: relative; }}
+.id {{ display: flex; align-items: center; gap: 20px; font: 700 40px "Plex"; }}
+.id img {{ width: 84px; height: 84px; border-radius: 19px; }}
+h1 {{ font: 700 84px/1.04 "Plex"; margin: 44px 0 28px; letter-spacing: -.01em; }}
+h1 span {{ color: #f2b632; }}
+p {{ font: 400 32px "Plex"; color: rgb(255 255 255 / 85%); margin: 0; }}
+.ph {{ position: absolute; right: 70px; top: 60px; width: 300px; padding: 10px; border-radius: 46px; background: #0b201d; transform: rotate(4deg); box-shadow: 0 30px 60px rgb(0 0 0 / 35%); }}
+.ph img {{ width: 100%; border-radius: 38px; display: block; }}
+</style>
+<div class="ph"><img src="{A}/img/splitpeak/screen-settle.webp"></div>
+<div class="id"><img src="{A}/img/apps/splitpeak.webp">split peak</div>
+<h1>Split the trip,<br><span>settle in one go</span></h1><p>Trips · Roommates · Couples · Dinners</p>""",
     "gamlog": f"""
 <style>{FONTS}
 body {{ background: #dce8e0; color: #22302a; padding: 72px 0 0 88px; box-sizing: border-box; position: relative; }}

@@ -1,6 +1,7 @@
 /* Ongi Studio — one stylesheet for every page.
-   Tokens live in :root (studio) and .theme-gamlog (GamLog's own palette, copied from
-   bp-log/GamLog/Resources/Assets.xcassets/Colors). tests/test_site.py checks every
+   Tokens live in :root (studio), .theme-gamlog (GamLog's own palette, copied from
+   bp-log/GamLog/Resources/Assets.xcassets/Colors) and .theme-splitpeak (Split Peak's,
+   from splitpeak/static/page.css). tests/test_site.py checks every
    text pair listed in CONTRAST below against WCAG AA in light and dark.
    CONTRAST: ink/ground ink/paper muted/ground muted/paper accent/ground accent/paper on-accent/accent */
 
@@ -21,6 +22,26 @@
   font-family: "Jua";
   src: url("/assets/fonts/jua-subset.woff2") format("woff2");
   font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  /* IBM's own Latin-1 files, unmodified (the OFL reserves the name "Plex"). Split Peak page only. */
+  font-family: "IBM Plex Sans";
+  src: url("/assets/fonts/IBMPlexSans-Regular-Latin1.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("/assets/fonts/IBMPlexSans-SemiBold-Latin1.woff2") format("woff2");
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  src: url("/assets/fonts/IBMPlexSans-Bold-Latin1.woff2") format("woff2");
+  font-weight: 700;
   font-display: swap;
 }
 
@@ -86,6 +107,33 @@
     --ember: #e9824a;
     --glow: #3a4d42;
     --leaf: #5f9c7e;
+  }
+}
+
+.theme-splitpeak {
+  --ground: #f3f6f5;
+  --paper: #ffffff;
+  --ink: #22312d;
+  --muted: #5a6b66;
+  --line: #dbe3e0;
+  --accent: #0a665c;
+  --on-accent: #ffffff;
+  --ember: #f2b632;   /* amber; decorative and on forest only */
+  --glow: #e9efed;
+  --forest: #0c3e37;  /* decorative ground for the hero and closing band */
+}
+@media (prefers-color-scheme: dark) {
+  .theme-splitpeak {
+    --ground: #0f1a18;
+    --paper: #16231f;
+    --ink: #e9efed;
+    --muted: #a3b5af;
+    --line: #2a3a36;
+    --accent: #5cc8b6;
+    --on-accent: #062b26;
+    --ember: #f2b632;
+    --glow: #1d2c28;
+    --forest: #0c3e37;
   }
 }
 
@@ -294,6 +342,52 @@ h1 .ko, h2 .ko, h3 .ko { margin-left: 0.15em; }
 .gami p { color: var(--muted); }
 .gami p:last-child { margin-bottom: 0; }
 
+/* Split Peak page: Split Peak's own look (forest, amber, IBM Plex Sans) */
+.theme-splitpeak main { font-family: "IBM Plex Sans", system-ui, sans-serif; }
+.theme-splitpeak main h1, .theme-splitpeak main h2, .theme-splitpeak main h3 { font-family: "IBM Plex Sans", system-ui, sans-serif; font-weight: 700; letter-spacing: -0.01em; }
+.theme-splitpeak main h3 { font-weight: 600; }
+.sp-band { position: relative; overflow: hidden; isolation: isolate; border-radius: 32px; background: var(--forest); color: #ffffff; }
+.sp-band .contours { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+@media (prefers-color-scheme: dark) { .sp-band { box-shadow: 0 0 0 1px rgb(255 255 255 / 8%); } }
+.sp-hero { margin-top: 8px; }
+.sp-hero .sp-band { padding: clamp(26px, 5vw, 56px); display: flex; flex-wrap: wrap; align-items: center; gap: 40px; }
+.sp-hero .copy { flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 18px; }
+.sp-id { display: flex; align-items: center; gap: 14px; margin: 0; font-weight: 700; font-size: 1.4rem; }
+.sp-id img { width: 60px; height: 60px; border-radius: 22.5%; box-shadow: 0 0 0 1px rgb(255 255 255 / 12%); }
+.sp-hero h1 { margin: 6px 0 0; font-size: clamp(2.3rem, 6vw, 3.8rem); line-height: 1.05; color: #ffffff; }
+.sp-hero h1 span, .sp-band .amber { color: #f2b632; }
+.sp-hero .lede { color: rgb(255 255 255 / 88%); max-width: 32em; margin: 0; }
+.sp-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.sp-chips li { padding: 6px 14px; border-radius: 999px; background: rgb(242 182 50 / 14%); border: 1px solid rgb(242 182 50 / 45%); color: #f2b632; font-weight: 600; font-size: 0.9rem; }
+.sp-get { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.sp-get a { display: inline-flex; align-items: center; min-height: 48px; }
+.sp-get .badge-apple { height: 48px; width: auto; }
+.sp-get .badge-google { height: 70px; width: auto; margin: -11px -7px; }
+.sp-get .btn-web { padding: 0 20px; border-radius: 999px; border: 2px solid rgb(255 255 255 / 40%); color: #ffffff; text-decoration: none; font-weight: 600; }
+.sp-get .btn-web.solid { background: #f2b632; border-color: #f2b632; color: #0c3e37; }
+.sp-phone-wrap { flex: 1 1 240px; display: flex; justify-content: center; }
+.sp-phone { width: min(260px, 70vw); padding: 9px; border-radius: 42px; background: #0b201d; box-shadow: 0 0 0 1px rgb(255 255 255 / 8%), 0 30px 60px rgb(0 0 0 / 35%); transform: rotate(3deg); animation: sp-float 4.5s ease-in-out infinite alternate; }
+.sp-phone img { width: 100%; height: auto; border-radius: 34px; }
+@keyframes sp-float { to { transform: rotate(3deg) translateY(-10px); } }
+@media (prefers-reduced-motion: reduce) { .sp-phone { animation: none; } }
+.sp-features { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); margin: 0; padding: 0; list-style: none; }
+.sp-features li { background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 22px; }
+.sp-features svg { width: 26px; height: 26px; stroke: var(--accent); }
+.sp-features h3 { margin: 12px 0 6px; font-size: 1.12rem; }
+.sp-features p { margin: 0; color: var(--muted); font-size: 0.97rem; }
+.sp-private { display: flex; flex-wrap: wrap; align-items: center; gap: 18px 28px; background: var(--paper); border: 1px solid var(--line); border-radius: 22px; padding: clamp(22px, 4vw, 34px); }
+.sp-private svg { width: 34px; height: 34px; stroke: var(--accent); flex: none; }
+.sp-private div { flex: 999 1 380px; min-width: 0; }
+.sp-private h2 { font-size: 1.35rem; margin: 0 0 6px; }
+.sp-private p { margin: 0; color: var(--muted); }
+.sp-private a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 600; }
+.sp-cta .sp-band { padding: clamp(26px, 5vw, 48px); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; }
+.sp-cta .sp-band > div { flex: 999 1 360px; min-width: 0; }
+.sp-cta h2 { color: #ffffff; margin: 0 0 6px; }
+.sp-cta p { color: rgb(255 255 255 / 88%); margin: 0; }
+.sp-cta .sp-ask { margin-top: 10px; font-size: 0.95rem; }
+.sp-cta .sp-ask a { color: #f2b632; }
+
 .lang-switch { font-weight: 600; }
 
 /* Long-form text (privacy, support) */
@@ -315,3 +409,8 @@ h1 .ko, h2 .ko, h3 .ko { margin-left: 0.15em; }
 .not-found { min-height: 60vh; display: grid; place-items: center; text-align: center; padding-block: 64px; }
 .not-found .btn-row { justify-content: center; }
 .not-found .word { font-family: var(--display-ko); font-size: 4rem; color: var(--accent); margin: 0; }
+/* Seven store panels don't fit in one row: the Split Peak strip keeps scrolling on wide screens. */
+@media (min-width: 1000px) {
+  .theme-splitpeak .shots { overflow-x: auto; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); }
+  .theme-splitpeak .shots img { flex: none; width: 210px; }
+}

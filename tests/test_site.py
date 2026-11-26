@@ -192,7 +192,9 @@ class Wording(unittest.TestCase):
     def test_support_email_is_on_every_content_page(self):
         for page in INDEXABLE:
             with self.subTest(page=page.relative_to(ROOT)):
-                self.assertIn(f"mailto:{SUPPORT_EMAIL}", page.read_text())
+                # Split Peak keeps its own support inbox; every other page uses the studio's.
+                email = "support@splitpeak.me" if page.parent.name == "splitpeak" else SUPPORT_EMAIL
+                self.assertIn(f"mailto:{email}", page.read_text())
 
     def test_gamlog_says_it_does_not_measure_or_diagnose(self):
         # Apple 1.4.1 / FDA wellness line: the disclaimer leads, in both languages.
@@ -300,6 +302,34 @@ class Brand(unittest.TestCase):
         self.assertEqual(covered, moving, "every moving part of the hero art stops")
 
 
+class SplitPeakPage(unittest.TestCase):
+    """/splitpeak/ (2026-11-26): Split Peak's own look, linked from the homepage card."""
+
+    PAGE = ROOT / "splitpeak/index.html"
+
+    def test_logotype_is_lowercase(self):
+        m = re.search(r'<p class="sp-id">.*?>([^<]+)</p>', self.PAGE.read_text())
+        self.assertEqual(m.group(1), "split peak")
+
+    def test_homepage_card_opens_the_page(self):
+        home = (ROOT / "index.html").read_text()
+        self.assertIn('<h3><a href="/splitpeak/">Split Peak</a></h3>', home)
+
+    def test_links_the_live_stores_and_web_app(self):
+        text = self.PAGE.read_text()
+        for url in ("https://apps.apple.com/us/app/split-peak-expense-splitter/id6786474883",
+                    "https://play.google.com/store/apps/details?id=me.splitpeak.app",
+                    "https://www.splitpeak.me/", "https://www.splitpeak.me/privacy"):
+            self.assertIn(f'href="{url}"', text)
+
+    def test_plex_ships_unmodified_with_its_licence(self):
+        # The OFL reserves "Plex": use IBM's own files, never a subset we made.
+        lic = (ROOT / "assets/fonts/IBMPlexSans-OFL.txt").read_text()
+        self.assertIn('Reserved Font Name "Plex"', lic)
+        for w in ("Regular", "SemiBold", "Bold"):
+            self.assertTrue((ROOT / f"assets/fonts/IBMPlexSans-{w}-Latin1.woff2").exists())
+
+
 class Fonts(unittest.TestCase):
     def test_jua_subset_covers_every_hangul_syllable_on_the_site(self):
         covered = set((ROOT / "assets/fonts/jua-subset.txt").read_text(encoding="utf-8").strip())
@@ -333,7 +363,7 @@ class Contrast(unittest.TestCase):
 
     def palettes(self):
         css = (ROOT / "assets/css/site.css").read_text()
-        blocks = re.findall(r"(:root|\.theme-gamlog)\s*\{([^}]*)\}", css)
+        blocks = re.findall(r"(:root|\.theme-gamlog|\.theme-splitpeak)\s*\{([^}]*)\}", css)
         out = {}
         for i, (sel, body) in enumerate(blocks):
             name = f"{sel}#{i}"
@@ -344,7 +374,7 @@ class Contrast(unittest.TestCase):
         header = (ROOT / "assets/css/site.css").read_text().split("*/", 1)[0]
         pairs = [p.split("/") for p in re.search(r"CONTRAST:(.*)", header).group(1).split()]
         palettes = self.palettes()
-        self.assertEqual(len(palettes), 4, "studio and GamLog, light and dark")
+        self.assertEqual(len(palettes), 6, "studio, GamLog and Split Peak, light and dark")
         for name, tokens in palettes.items():
             for fg, bg in pairs:
                 with self.subTest(palette=name, pair=f"{fg}/{bg}"):
