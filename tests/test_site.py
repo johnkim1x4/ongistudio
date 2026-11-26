@@ -11,6 +11,7 @@ SITE = "https://ongistudio.app"
 PAGES = sorted(p for p in ROOT.rglob("*.html") if ".git" not in p.parts and "scripts" not in p.parts)
 INDEXABLE = [p for p in PAGES if p.name == "index.html"]
 GAMLOG_EN = [ROOT / "gamlog/index.html", ROOT / "gamlog/privacy/index.html"]
+HEALTH_DATA = ROOT / "gamlog/privacy/health-data/index.html"
 GAMLOG_KO = [ROOT / "gamlog/ko/index.html", ROOT / "gamlog/privacy/ko/index.html"]
 SUPPORT_EMAIL = "support@ongistudio.app"
 # The only addresses allowed anywhere on the public site. A personal address must never leak.
@@ -304,13 +305,68 @@ class PrivacySource(unittest.TestCase):
         self.assertEqual(mod.build(check=True), [], "run scripts/sync_privacy.py")
 
     def test_privacy_pages_fill_in_the_contact(self):
-        for page in GAMLOG_EN + GAMLOG_KO:
+        for page in GAMLOG_EN + GAMLOG_KO + [HEALTH_DATA]:
             if "privacy" in page.parts:
                 text = page.read_text()
                 self.assertIn(f"mailto:{SUPPORT_EMAIL}", text)
                 self.assertNotIn("[contact address to be added]", text)
                 self.assertNotIn("[문의처 추가 예정]", text)
                 self.assertNotIn("draft", text.lower())
+
+    def _sync(self):
+        spec = importlib.util.spec_from_file_location("sync_privacy", ROOT / "scripts/sync_privacy.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        return mod
+
+    def test_renderer_turns_lists_links_and_headings_into_html(self):
+        mod = self._sync()
+        md = ("**Title**\n\nLast updated: today\n\n**What we keep**\n\n"
+              "- one **bold** item\n- write to [us](mailto:support@ongistudio.app)\n\n"
+              "See [the policy](https://ongistudio.app/gamlog/privacy/) & more.")
+        out = mod.body_html(md)
+        self.assertIn("<h2>What we keep</h2>", out)
+        self.assertIn("<li>one <strong>bold</strong> item</li>", out)
+        self.assertIn('<a href="mailto:support@ongistudio.app">us</a>', out)
+        self.assertIn('<a href="/gamlog/privacy/">the policy</a> &amp; more.', out)
+        self.assertNotIn("Last updated", out)
+        self.assertEqual(mod.updated_line(md), "Last updated: today")
+
+    def test_renderer_refuses_other_links_and_a_missing_date(self):
+        mod = self._sync()
+        with self.assertRaises(ValueError):
+            mod.body_html("**T**\n\nLast updated: x\n\nA [link](http://example.com).")
+        with self.assertRaises(ValueError):
+            mod.updated_line("**T**\n\nNo date here.")
+
+    def test_privacy_pages_show_the_sources_date(self):
+        mod = self._sync()
+        if not mod.SOURCE.exists():
+            self.skipTest("bp-log checkout not next to this repo")
+        for key, p in mod.PAGES.items():
+            with self.subTest(page=key):
+                date = mod.updated_line((mod.SOURCE / p["src"]).read_text(encoding="utf-8"))
+                self.assertIn(f'<p class="updated">{date}</p>', (ROOT / p["out"]).read_text())
+
+
+class HealthData(unittest.TestCase):
+    """Washington's My Health My Data Act: a separate, prominent homepage link to the policy."""
+
+    LINK = '<a href="/gamlog/privacy/health-data/">Consumer Health Data Privacy Policy</a>'
+
+    def test_homepages_link_the_consumer_health_data_policy_on_its_own(self):
+        for page in (ROOT / "index.html", ROOT / "gamlog/index.html"):
+            with self.subTest(page=page.relative_to(ROOT)):
+                self.assertIn(self.LINK, page.read_text())
+
+    def test_the_policy_names_the_law_and_the_rights(self):
+        text = norm(parse(HEALTH_DATA).plain)
+        self.assertIn("My Health My Data Act", text)
+        for phrase in ("collect, and why", "Where it comes from", "we share, and with whom", "appeal"):
+            self.assertIn(phrase, text)
+
+    def test_the_main_policy_points_to_it(self):
+        self.assertIn('href="/gamlog/privacy/health-data/"', (ROOT / "gamlog/privacy/index.html").read_text())
 
 
 if __name__ == "__main__":

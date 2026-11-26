@@ -9,6 +9,7 @@ stylesheet, served by GitHub Pages from `main` at <https://ongistudio.app>.
 | `/` | Studio home: the apps (Split Peak, GamLog), what we care about, why "Ongi", contact |
 | `/gamlog/`, `/gamlog/ko/` | GamLog app page, English and Korean ("coming soon to the App Store") |
 | `/gamlog/privacy/`, `/gamlog/privacy/ko/` | GamLog privacy policy (the URL for App Store Connect) |
+| `/gamlog/privacy/health-data/` | GamLog Consumer Health Data Privacy Policy (Washington My Health My Data Act and similar laws), linked on its own from the home and GamLog footers |
 | `/support/` | Support for both apps, with a Korean section at `#ko` (the App Store support URL) |
 | `/404.html` | Not-found page (GitHub Pages serves it for missing paths) |
 
@@ -35,6 +36,7 @@ every colour token in light and dark, the Korean font subset, and the wording ru
 - GamLog pages show no prices and never say "free" / "무료", same as the App Store screenshots.
 - No GamLog store link until it's live; then add it and drop "coming soon".
 - "HIPAA" never appears.
+- The Consumer Health Data Privacy Policy has its own link, with that exact name, on the home page and the GamLog page (Washington AG: a separate, distinct homepage link).
 - The only email addresses on the site are `support@ongistudio.app` and `support@splitpeak.me`.
 
 ## Generated files
@@ -44,7 +46,7 @@ These scripts live in `scripts/` and read from the GamLog repo checked out next 
 
 | Script | Writes | Rerun when |
 |---|---|---|
-| `sync_privacy.py` | `gamlog/privacy/**` from `bp-log/GamLog/Resources/privacy-{en,ko}.md` | the in-app policy changes (also bump the "updated" dates in its `PAGES`) |
+| `sync_privacy.py` | `gamlog/privacy/**` from `bp-log/GamLog/Resources/privacy-{en,ko}.md` and `health-data-en.md` | the policy text changes (bump the date line in the source files; the pages take it from there) |
 | `build_fonts.py` | `assets/fonts/*.woff2`, the Jua Korean subset and `jua-subset.txt` | Korean copy changes (a test fails if a syllable is missing) |
 | `make_mark.py` | `assets/img/mark.svg`, `apple-touch-icon.png`, `mark-512.png` | the mark changes |
 | `render_og.py` | `assets/img/og/*.png` link previews (headless Chrome) | headline copy changes |
