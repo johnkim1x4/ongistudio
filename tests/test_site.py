@@ -238,6 +238,17 @@ class Wording(unittest.TestCase):
         self.assertNotIn("word-card", hero)
         self.assertIn("word-card", story)
 
+    def test_home_footer_leaves_app_links_to_the_app_pages(self):
+        # 2026-11-26: "GamLog" and "GamLog privacy" live only on the GamLog page's footer.
+        # (The Consumer Health Data Privacy Policy link stays: see HealthData.)
+        home = (ROOT / "index.html").read_text()
+        footer = re.search(r'<footer class="site-footer">(.*?)</footer>', home, re.S).group(1)
+        self.assertNotIn('href="/gamlog/"', footer)
+        self.assertNotIn('href="/gamlog/privacy/"', footer)
+        gamlog_footer = re.search(r'<footer class="site-footer">(.*?)</footer>',
+                                  (ROOT / "gamlog/index.html").read_text(), re.S).group(1)
+        self.assertIn('href="/gamlog/privacy/"', gamlog_footer)
+
     def test_home_links_both_apps(self):
         home = (ROOT / "index.html").read_text()
         self.assertIn('href="https://www.splitpeak.me/"', home)
