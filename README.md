@@ -39,6 +39,15 @@ every colour token in light and dark, the Korean font subset, and the wording ru
 - The Consumer Health Data Privacy Policy has its own link, with that exact name, on the home page and the GamLog page (Washington AG: a separate, distinct homepage link).
 - The only email addresses on the site are `support@ongistudio.app` and `support@splitpeak.me`.
 
+## Logo and hero art
+
+- **Logo (interim, chosen 2026-11-26):** the "ongi studio" wordmark in Fraunces Soft whose first
+  i-dot is a small ember app tile; the favicon is that tile-dotted ı on a cream tile. Option 5 of
+  round 2 on the design canvas, kept until a final mark is picked. It is drawn as outlines by
+  `scripts/make_logo.py`. Narrow phones with three nav items show the square mark instead.
+- **Hero art:** our app icons rising out of an ember glow (round 3, "R2", glow centred), built in
+  CSS (`.hero-art` in `site.css`) so it scales with the page and honours reduced motion.
+
 ## Generated files
 
 These scripts live in `scripts/` and read from the GamLog repo checked out next to this one
@@ -48,10 +57,10 @@ These scripts live in `scripts/` and read from the GamLog repo checked out next 
 |---|---|---|
 | `sync_privacy.py` | `gamlog/privacy/**` from `bp-log/GamLog/Resources/privacy-{en,ko}.md` and `health-data-en.md` | the policy text changes (bump the date line in the source files; the pages take it from there) |
 | `build_fonts.py` | `assets/fonts/*.woff2`, the Jua Korean subset and `jua-subset.txt` | Korean copy changes (a test fails if a syllable is missing) |
-| `make_mark.py` | `assets/img/mark.svg`, `apple-touch-icon.png`, `mark-512.png` | the mark changes |
+| `make_logo.py` | `assets/img/logo.svg` (header wordmark, dark-mode aware), `mark.svg` (favicon), `apple-touch-icon.png`, `mark-512.png` | the logo changes (the current one is an interim pick, see above) |
 | `render_og.py` | `assets/img/og/*.png` link previews (headless Chrome) | headline copy changes |
 
-`build_fonts.py` and `make_mark.py` need `pip install fonttools brotli`; `make_mark.py` also
+`build_fonts.py` and `make_logo.py` need `pip install fonttools brotli`; `make_logo.py` also
 needs `rsvg-convert` (`brew install librsvg`).
 
 Images: app icons and Gami art come from the app repos (Gami is Recraft Pro-plan art, see

@@ -148,7 +148,7 @@ def render(key: str, md: str) -> str:
 <a class="skip" href="#main">{p["skip"]}</a>
 <header class="site-header">
   <div class="wrap">
-    <a class="brand" href="/" aria-label="Ongi Studio"><img src="/assets/img/mark.svg" alt="" width="36" height="36"><span class="brand-name" lang="en">Ongi Studio</span></a>
+    <a class="brand" href="/" aria-label="Ongi Studio"><img class="brand-mark" src="/assets/img/mark.svg" alt="" width="36" height="36"><img class="brand-word" src="/assets/img/logo.svg" alt="" width="149" height="30"></a>
     <nav aria-label="Main"><ul class="nav">
 {nav}{switch}
     </ul></nav>

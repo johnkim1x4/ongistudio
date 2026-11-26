@@ -244,6 +244,42 @@ class Wording(unittest.TestCase):
         self.assertIn('href="/gamlog/"', home)
 
 
+class Brand(unittest.TestCase):
+    """Interim logo and hero art (decided 2026-11-26), pinned so no page drifts from them."""
+
+    def test_every_header_uses_the_wordmark_and_mark(self):
+        for page in PAGES:
+            with self.subTest(page=page.relative_to(ROOT)):
+                brand = {a.get("class"): a.get("src") for t, a in parse(page).tags
+                         if t == "img" and a.get("class", "").startswith("brand-")}
+                self.assertEqual(brand, {"brand-mark": "/assets/img/mark.svg", "brand-word": "/assets/img/logo.svg"})
+
+    def test_logo_files_are_outlines_and_follow_dark_mode(self):
+        logo = (ROOT / "assets/img/logo.svg").read_text()
+        mark = (ROOT / "assets/img/mark.svg").read_text()
+        for name, svg in (("logo.svg", logo), ("mark.svg", mark)):
+            self.assertNotIn("<text", svg, f"{name} must be outlines, not depend on a font")
+        self.assertIn("prefers-color-scheme: dark", logo, "the wordmark's ink flips for dark mode")
+
+    def test_home_hero_art_is_our_apps_rising_from_the_glow(self):
+        home = (ROOT / "index.html").read_text()
+        hero = re.search(r'<section class="hero">(.*?)</section>', home, re.S).group(1)
+        art = re.search(r'<div class="hero-art" aria-hidden="true">(.*?)</div>', hero, re.S)
+        self.assertTrue(art, "decorative hero art, hidden from screen readers")
+        self.assertIn("/assets/img/apps/splitpeak.webp", art.group(1))
+        self.assertIn("/assets/img/apps/gamlog.webp", art.group(1))
+        self.assertNotIn("Next app", hero)
+
+    def test_hero_art_stops_moving_for_reduced_motion(self):
+        css = (ROOT / "assets/css/site.css").read_text()
+        block = re.search(r"@media \(prefers-reduced-motion: reduce\) \{\s*\.hero-art(.*?)\n\}", css, re.S)
+        self.assertTrue(block, "a reduced-motion block for the hero art")
+        rules = [line.strip() for line in block.group(0).splitlines() if ".hero-art" in line and "{" in line]
+        moving = {"glow", "app", "spark"}
+        covered = {m for m in moving for r in rules if f".hero-art .{m}" in r and "animation: none" in r}
+        self.assertEqual(covered, moving, "every moving part of the hero art stops")
+
+
 class Fonts(unittest.TestCase):
     def test_jua_subset_covers_every_hangul_syllable_on_the_site(self):
         covered = set((ROOT / "assets/fonts/jua-subset.txt").read_text(encoding="utf-8").strip())

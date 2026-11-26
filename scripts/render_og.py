@@ -24,16 +24,16 @@ body {{ font-family: "Lexend", sans-serif; -webkit-font-smoothing: antialiased; 
 CARDS = {
     "studio": f"""
 <style>{FONTS}
-body {{ background: #fbf5ec; color: #2b231e; display: flex; align-items: center; gap: 64px; padding: 0 96px; box-sizing: border-box; position: relative; }}
+body {{ background: #fbf5ec; color: #2b231e; display: flex; flex-direction: column; justify-content: center; padding: 0 96px; box-sizing: border-box; position: relative; }}
 body::before {{ content: ""; position: absolute; right: -160px; bottom: -260px; width: 760px; height: 760px; border-radius: 50%; background: radial-gradient(closest-side, #f8d6b3, transparent); }}
-img {{ width: 220px; height: 220px; position: relative; }}
+img {{ height: 64px; width: auto; position: relative; align-self: flex-start; }}
 div {{ position: relative; }}
 .k {{ font: 600 26px "Lexend"; letter-spacing: .08em; text-transform: uppercase; color: #6a5a4f; }}
 .k span {{ font-family: "Jua"; letter-spacing: 0; text-transform: none; }}
 h1 {{ font: 650 76px/1.05 "Fraunces Soft"; margin: 18px 0 22px; letter-spacing: -.01em; }}
 p {{ font: 400 30px/1.4 "Lexend"; color: #6a5a4f; margin: 0; }}
 </style>
-<img src="{A}/img/mark.svg"><div><div class="k">Ongi Studio · <span>온기 스튜디오</span></div><h1>Small apps with a little warmth in them.</h1><p>ongistudio.app</p></div>""",
+<img src="{A}/img/logo.svg"><div><h1 style="margin-top: 40px">Small apps with a little warmth in them.</h1><p>ongistudio.app · <span style="font-family: Jua">온기 스튜디오</span></p></div>""",
     "gamlog": f"""
 <style>{FONTS}
 body {{ background: #dce8e0; color: #22302a; padding: 72px 0 0 88px; box-sizing: border-box; position: relative; }}
@@ -77,6 +77,7 @@ def main() -> None:
             page.write_text(f'<!doctype html><meta charset="utf-8">{body}', encoding="utf-8")
             subprocess.run([
                 CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                "--blink-settings=preferredColorScheme=1",  # light: logo.svg follows the colour scheme
                 "--allow-file-access-from-files", "--force-device-scale-factor=1",
                 "--virtual-time-budget=3000", "--window-size=1200,630",
                 f"--screenshot={out / (name + '.png')}", page.as_uri(),
