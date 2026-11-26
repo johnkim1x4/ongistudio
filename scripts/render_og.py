@@ -1,0 +1,88 @@
+"""Render the 1200x630 link-preview images (og:image) with headless Chrome.
+
+    python3 scripts/render_og.py
+
+Writes assets/img/og/{studio,gamlog,gamlog-ko}.png from the cards below, using the
+site's own fonts and art. Needs Google Chrome.
+"""
+import pathlib
+import subprocess
+import tempfile
+
+ROOT = pathlib.Path(__file__).resolve().parent.parent
+CHROME = "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+A = ROOT.as_uri() + "/assets"
+
+FONTS = f"""
+@font-face {{ font-family: "Fraunces Soft"; src: url("{A}/fonts/fraunces-soft-semibold.woff2"); font-weight: 600 700; }}
+@font-face {{ font-family: "Lexend"; src: url("{A}/fonts/lexend-variable.woff2"); font-weight: 100 900; }}
+@font-face {{ font-family: "Jua"; src: url("{A}/fonts/jua-subset.woff2"); }}
+html, body {{ margin: 0; width: 1200px; height: 630px; overflow: hidden; }}
+body {{ font-family: "Lexend", sans-serif; -webkit-font-smoothing: antialiased; }}
+"""
+
+CARDS = {
+    "studio": f"""
+<style>{FONTS}
+body {{ background: #fbf5ec; color: #2b231e; display: flex; align-items: center; gap: 64px; padding: 0 96px; box-sizing: border-box; position: relative; }}
+body::before {{ content: ""; position: absolute; right: -160px; bottom: -260px; width: 760px; height: 760px; border-radius: 50%; background: radial-gradient(closest-side, #f8d6b3, transparent); }}
+img {{ width: 220px; height: 220px; position: relative; }}
+div {{ position: relative; }}
+.k {{ font: 600 26px "Lexend"; letter-spacing: .08em; text-transform: uppercase; color: #6a5a4f; }}
+.k span {{ font-family: "Jua"; letter-spacing: 0; text-transform: none; }}
+h1 {{ font: 650 76px/1.05 "Fraunces Soft"; margin: 18px 0 22px; letter-spacing: -.01em; }}
+p {{ font: 400 30px/1.4 "Lexend"; color: #6a5a4f; margin: 0; }}
+</style>
+<img src="{A}/img/mark.svg"><div><div class="k">Ongi Studio · <span>온기 스튜디오</span></div><h1>Small apps with a little warmth in them.</h1><p>ongistudio.app</p></div>""",
+    "gamlog": f"""
+<style>{FONTS}
+body {{ background: #dce8e0; color: #22302a; padding: 72px 0 0 88px; box-sizing: border-box; position: relative; }}
+.g {{ position: absolute; right: 40px; bottom: -10px; width: 430px; }}
+.glow {{ position: absolute; right: -40px; bottom: -120px; width: 620px; height: 620px; border-radius: 50%; background: radial-gradient(closest-side, #fffdf8, transparent); }}
+.id {{ display: flex; align-items: center; gap: 20px; }}
+.id img {{ width: 84px; height: 84px; border-radius: 19px; box-shadow: 0 6px 18px rgb(0 0 0 / 12%); }}
+.id b {{ font: 650 44px "Fraunces Soft"; }} .id i {{ font: normal 34px "Jua"; color: #4b6457; margin-left: 10px; }}
+h1 {{ font: 650 70px/1.06 "Fraunces Soft"; margin: 34px 0 30px; max-width: 640px; letter-spacing: -.01em; }}
+.pill {{ display: inline-flex; align-items: center; gap: 12px; font: 600 26px "Lexend"; color: #a14817; background: rgb(161 72 23 / 12%); padding: 12px 24px; border-radius: 999px; }}
+.pill::before {{ content: ""; width: 12px; height: 12px; border-radius: 50%; background: #e56f2a; }}
+</style>
+<div class="glow"></div><img class="g" src="{A}/img/gamlog/gami-wave.webp">
+<div class="id"><img src="{A}/img/apps/gamlog.webp"><b>GamLog</b><i>감록</i></div>
+<h1>The blood pressure log your doctor asked for</h1><span class="pill">Coming soon to the App Store</span>""",
+    "gamlog-ko": f"""
+<style>{FONTS}
+body {{ background: #dce8e0; color: #22302a; padding: 72px 0 0 88px; box-sizing: border-box; position: relative; }}
+.g {{ position: absolute; right: 40px; bottom: -10px; width: 430px; }}
+.glow {{ position: absolute; right: -40px; bottom: -120px; width: 620px; height: 620px; border-radius: 50%; background: radial-gradient(closest-side, #fffdf8, transparent); }}
+.id {{ display: flex; align-items: center; gap: 20px; }}
+.id img {{ width: 84px; height: 84px; border-radius: 19px; box-shadow: 0 6px 18px rgb(0 0 0 / 12%); }}
+.id b {{ font: normal 48px "Jua"; }} .id i {{ font: 650 32px "Fraunces Soft"; font-style: normal; color: #4b6457; margin-left: 10px; }}
+h1 {{ font: normal 72px/1.2 "Jua"; margin: 34px 0 30px; max-width: 620px; word-break: keep-all; }}
+.pill {{ display: inline-flex; align-items: center; gap: 12px; font: 600 26px "Lexend"; color: #a14817; background: rgb(161 72 23 / 12%); padding: 12px 24px; border-radius: 999px; }}
+.pill span {{ font-family: "Jua"; font-weight: 400; }}
+.pill::before {{ content: ""; width: 12px; height: 12px; border-radius: 50%; background: #e56f2a; }}
+</style>
+<div class="glow"></div><img class="g" src="{A}/img/gamlog/gami-wave.webp">
+<div class="id"><img src="{A}/img/apps/gamlog.webp"><b>감록</b><i>GamLog</i></div>
+<h1>병원에서 요구하는<br>혈압 일지,<br>간편하게 준비</h1><span class="pill">App Store <span>출시 예정</span></span>""",
+}
+
+
+def main() -> None:
+    out = ROOT / "assets/img/og"
+    out.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory() as tmp:
+        for name, body in CARDS.items():
+            page = pathlib.Path(tmp) / f"{name}.html"
+            page.write_text(f'<!doctype html><meta charset="utf-8">{body}', encoding="utf-8")
+            subprocess.run([
+                CHROME, "--headless=new", "--disable-gpu", "--hide-scrollbars",
+                "--allow-file-access-from-files", "--force-device-scale-factor=1",
+                "--virtual-time-budget=3000", "--window-size=1200,630",
+                f"--screenshot={out / (name + '.png')}", page.as_uri(),
+            ], check=True, capture_output=True)
+            print("wrote", out / f"{name}.png")
+
+
+if __name__ == "__main__":
+    main()
