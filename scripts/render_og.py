@@ -50,6 +50,20 @@ p {{ font: 400 32px "Plex"; color: rgb(255 255 255 / 85%); margin: 0; }}
 <div class="ph"><img src="{A}/img/splitpeak/screen-settle.webp"></div>
 <div class="id"><img src="{A}/img/apps/splitpeak.webp">split peak</div>
 <h1>Split the trip,<br><span>settle in one go</span></h1><p>Trips · Roommates · Couples · Dinners</p>""",
+    "splitpeak-ko": f"""
+<style>{FONTS}
+body {{ background: #0c3e37; color: #fff; padding: 80px 0 0 88px; box-sizing: border-box; position: relative; }}
+.id {{ display: flex; align-items: center; gap: 20px; font: 700 40px "Plex"; }}
+.id img {{ width: 84px; height: 84px; border-radius: 19px; }}
+h1 {{ font: 700 80px/1.18 "Plex", "Apple SD Gothic Neo"; margin: 44px 0 28px; letter-spacing: -.01em; }}
+h1 span {{ color: #f2b632; }}
+p {{ font: 400 32px "Plex", "Apple SD Gothic Neo"; color: rgb(255 255 255 / 85%); margin: 0; }}
+.ph {{ position: absolute; right: 70px; top: 60px; width: 300px; padding: 10px; border-radius: 46px; background: #0b201d; transform: rotate(4deg); box-shadow: 0 30px 60px rgb(0 0 0 / 35%); }}
+.ph img {{ width: 100%; border-radius: 38px; display: block; }}
+</style>
+<div class="ph"><img src="{A}/img/splitpeak/screen-settle-ko.webp"></div>
+<div class="id"><img src="{A}/img/apps/splitpeak.webp">split peak</div>
+<h1>여행도 모임도,<br><span>정산은 한 번에</span></h1><p>더치페이 · 여행 경비 · 모임 정산</p>""",
     "gamlog": f"""
 <style>{FONTS}
 body {{ background: #dce8e0; color: #22302a; padding: 72px 0 0 88px; box-sizing: border-box; position: relative; }}

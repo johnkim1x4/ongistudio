@@ -172,6 +172,7 @@ class Links(unittest.TestCase):
 
     def test_language_versions_point_at_each_other(self):
         pairs = [(ROOT / "gamlog/index.html", "/gamlog/ko/"), (ROOT / "gamlog/ko/index.html", "/gamlog/"),
+                 (ROOT / "splitpeak/index.html", "/splitpeak/ko/"), (ROOT / "splitpeak/ko/index.html", "/splitpeak/"),
                  (ROOT / "gamlog/privacy/index.html", "/gamlog/privacy/ko/"),
                  (ROOT / "gamlog/privacy/ko/index.html", "/gamlog/privacy/")]
         for page, other in pairs:
@@ -193,7 +194,7 @@ class Wording(unittest.TestCase):
         for page in INDEXABLE:
             with self.subTest(page=page.relative_to(ROOT)):
                 # Split Peak keeps its own support inbox; every other page uses the studio's.
-                email = "support@splitpeak.me" if page.parent.name == "splitpeak" else SUPPORT_EMAIL
+                email = "support@splitpeak.me" if "splitpeak" in page.relative_to(ROOT).parts else SUPPORT_EMAIL
                 self.assertIn(f"mailto:{email}", page.read_text())
 
     def test_gamlog_says_it_does_not_measure_or_diagnose(self):
@@ -307,9 +308,20 @@ class SplitPeakPage(unittest.TestCase):
 
     PAGE = ROOT / "splitpeak/index.html"
 
+    KO = ROOT / "splitpeak/ko/index.html"
+
     def test_logotype_is_lowercase(self):
-        m = re.search(r'<p class="sp-id">.*?>([^<]+)</p>', self.PAGE.read_text())
-        self.assertEqual(m.group(1), "split peak")
+        for page in (self.PAGE, self.KO):
+            with self.subTest(page=page.relative_to(ROOT)):
+                m = re.search(r'<p class="sp-id"[^>]*>.*?>([^<]+)</p>', page.read_text())
+                self.assertEqual(m.group(1), "split peak")
+
+    def test_korean_page_never_sells_receipt_scanning(self):
+        # Scanning is offered for USD only, so a won group never sees it (store listing, 2026-11-23).
+        text = parse(self.KO).plain
+        for word in ("영수증", "스캔", "receipt"):
+            self.assertNotIn(word, text)
+        self.assertNotIn("4-receipt", self.KO.read_text())
 
     def test_homepage_card_opens_the_page(self):
         home = (ROOT / "index.html").read_text()

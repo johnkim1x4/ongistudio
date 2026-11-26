@@ -346,6 +346,9 @@ h1 .ko, h2 .ko, h3 .ko { margin-left: 0.15em; }
 .theme-splitpeak main { font-family: "IBM Plex Sans", system-ui, sans-serif; }
 .theme-splitpeak main h1, .theme-splitpeak main h2, .theme-splitpeak main h3 { font-family: "IBM Plex Sans", system-ui, sans-serif; font-weight: 700; letter-spacing: -0.01em; }
 .theme-splitpeak main h3 { font-weight: 600; }
+/* Korean: Plex has no Hangul, so the system's Korean faces carry the text (bold headings, no Jua). */
+.theme-splitpeak main:lang(ko), .theme-splitpeak main:lang(ko) h1, .theme-splitpeak main:lang(ko) h2, .theme-splitpeak main:lang(ko) h3 { font-family: "IBM Plex Sans", "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif; letter-spacing: 0; }
+.theme-splitpeak main:lang(ko) h1 { line-height: 1.18; }
 .sp-band { position: relative; overflow: hidden; isolation: isolate; border-radius: 32px; background: var(--forest); color: #ffffff; }
 .sp-band .contours { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
 @media (prefers-color-scheme: dark) { .sp-band { box-shadow: 0 0 0 1px rgb(255 255 255 / 8%); } }
