@@ -201,10 +201,9 @@ h1 .ko, h2 .ko, h3 .ko { margin-left: 0.15em; }
 .values .glyph svg { width: 22px; height: 22px; stroke: var(--accent); }
 
 /* Name story */
-.story { display: grid; gap: clamp(24px, 5vw, 56px); grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); align-items: start; }
+.story { display: grid; gap: clamp(28px, 6vw, 72px); grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); align-items: center; }
 @media (max-width: 760px) { .story { grid-template-columns: 1fr; } }
-.story .big { font-family: var(--display-ko); font-size: clamp(5rem, 16vw, 9rem); line-height: 0.95; color: var(--accent); margin: 0; }
-.story .big small { display: block; font-family: var(--display); font-size: 1.1rem; color: var(--muted); margin-top: 12px; }
+.story p { max-width: 34em; }
 
 /* Contact band */
 .band { background: var(--paper); border-radius: 28px; padding: clamp(28px, 5vw, 56px); box-shadow: var(--shadow); display: grid; gap: 20px; grid-template-columns: minmax(0, 1fr) auto; align-items: center; }

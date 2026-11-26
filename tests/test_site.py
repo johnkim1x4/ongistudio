@@ -220,6 +220,23 @@ class Wording(unittest.TestCase):
             self.assertFalse([a for t, a in p.tags if "apps.apple.com" in a.get("href", "")],
                              "add the store link when GamLog is live, and drop 'coming soon'")
 
+    def test_home_hero_has_one_call_to_action(self):
+        # Decided 2026-11-26: "Say hello" lives only in the contact band, not the hero.
+        home = (ROOT / "index.html").read_text()
+        hero = re.search(r'<section class="hero">(.*?)</section>', home, re.S).group(1)
+        self.assertEqual(len(re.findall(r'class="btn[ "]', hero)), 1)
+        self.assertNotIn("mailto:", hero)
+        band = re.search(r'<section[^>]*aria-labelledby="contact-title">(.*?)</section>', home, re.S).group(1)
+        self.assertIn(f"mailto:{SUPPORT_EMAIL}", band)
+
+    def test_ongi_definition_sits_with_why_ongi(self):
+        # Decided 2026-11-26: the 온기 definition card belongs beside "Why Ongi?", not in the hero.
+        home = (ROOT / "index.html").read_text()
+        hero = re.search(r'<section class="hero">(.*?)</section>', home, re.S).group(1)
+        story = re.search(r'<section[^>]*aria-labelledby="name-title">(.*?)</section>', home, re.S).group(1)
+        self.assertNotIn("word-card", hero)
+        self.assertIn("word-card", story)
+
     def test_home_links_both_apps(self):
         home = (ROOT / "index.html").read_text()
         self.assertIn('href="https://www.splitpeak.me/"', home)
