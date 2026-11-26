@@ -270,6 +270,15 @@ class Brand(unittest.TestCase):
         self.assertIn("/assets/img/apps/gamlog.webp", art.group(1))
         self.assertNotIn("Next app", hero)
 
+    def test_hero_glow_is_light_not_a_ball_in_dark_mode(self):
+        # 2026-11-26: on dark screens the light-mode glow read as an opaque orange disc.
+        css = (ROOT / "assets/css/site.css").read_text()
+        dark = [m.group(0) for m in re.finditer(r"@media \(prefers-color-scheme: dark\) \{\n(.*?)\n\}", css, re.S)]
+        block = next((b for b in dark if ".hero-art" in b), "")
+        self.assertIn(".hero-art .glow { mix-blend-mode: screen; }", block)
+        for part in ("g1", "g2", "g3", "core"):
+            self.assertRegex(block, rf"\.hero-art \.{part} \{{ background: radial-gradient\(")
+
     def test_hero_art_stops_moving_for_reduced_motion(self):
         css = (ROOT / "assets/css/site.css").read_text()
         block = re.search(r"@media \(prefers-reduced-motion: reduce\) \{\s*\.hero-art(.*?)\n\}", css, re.S)
