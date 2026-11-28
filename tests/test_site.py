@@ -500,3 +500,16 @@ class JapanesePrivacy(unittest.TestCase):
             with self.subTest(needle=needle):
                 self.assertIn(needle, section)
 
+    def test_japanese_text_runs_straight_into_links(self):
+        """Japanese doesn't put a space between a link and the text around it
+        (「…app までお送りください」 read as a typo; textlint ja-spacing, 2026-11-27)."""
+        support = (ROOT / "support/index.html").read_text()
+        section = support[support.index('<section id="ja"'):]
+        section = section[:section.index("</section>")]
+        jp = r"[　-ヿ一-鿿＀-￯]"
+        for name, text in [("privacy/ja", (ROOT / "gamlog/privacy/ja/index.html").read_text()),
+                           ("support #ja", section)]:
+            with self.subTest(page=name):
+                self.assertEqual(re.findall(rf".{{0,15}}</a>[ \t]+{jp}.{{0,10}}", text), [])
+                self.assertEqual(re.findall(rf".{{0,10}}{jp}[ \t]+<a .{{0,30}}", text), [])
+
