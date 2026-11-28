@@ -487,3 +487,16 @@ class JapanesePrivacy(unittest.TestCase):
         self.assertEqual(p.html_lang, "ja")
         self.assertIn(f"<loc>{SITE}/gamlog/privacy/ja/</loc>", (ROOT / "sitemap.xml").read_text())
 
+    def test_support_page_has_a_japanese_section(self):
+        page = ROOT / "support/index.html"
+        text = page.read_text()
+        p = parse(page)
+        self.assertTrue(p.find("a", **{"class": "lang-switch", "href": "#ja"}), "header link to #ja")
+        self.assertIn('<section id="ja" lang="ja"', text)
+        section = text[text.index('<section id="ja"'):]
+        section = section[:section.index("</section>")]
+        for needle in ["mailto:support@ongistudio.app", "/gamlog/privacy/ja/", "119番", "購入を復元",
+                       "血圧を測ったり、診断したりはしません"]:
+            with self.subTest(needle=needle):
+                self.assertIn(needle, section)
+

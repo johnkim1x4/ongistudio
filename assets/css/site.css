@@ -163,6 +163,8 @@ h3 { font-size: 1.3rem; }
 p { margin: 0 0 1em; text-wrap: pretty; }
 .ko { font-family: var(--display-ko); font-weight: 400; letter-spacing: 0; }
 h1 .ko, h2 .ko, h3 .ko { margin-left: 0.15em; }
+.ja { font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; font-weight: 700; letter-spacing: 0; }
+h1 .ja, h2 .ja, h3 .ja { margin-left: 0.15em; }
 
 .skip { position: absolute; left: -9999px; }
 .skip:focus { left: 12px; top: 12px; z-index: 10; background: var(--paper); padding: 10px 14px; border-radius: 10px; }
