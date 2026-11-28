@@ -1,6 +1,6 @@
 """Build the GamLog privacy pages from the app's own policy text.
 
-The app bundles GamLog/Resources/privacy-{en,ko}.md (bp-log repo). This script turns
+The app bundles GamLog/Resources/privacy-{en,ko,ja}.md (bp-log repo). This script turns
 those files, and health-data-en.md (the Consumer Health Data Privacy Policy that
 Washington's My Health My Data Act wants as its own page), into HTML under
 gamlog/privacy/, so the in-app policy and the hosted one are the same words.
@@ -12,7 +12,7 @@ sits next to this repo).
 
 Source format (also what the app shows, as inline Markdown):
   block 1          the title (the page's h1 comes from PAGES)
-  block 2          "Last updated: ..." / "최종 수정일: ..."
+  block 2          "Last updated: ..." / "최종 수정일: ..." / "最終更新日：..."
   **Heading**      a block that is only bold text becomes an h2
   - item           a block of "- " lines becomes a list
   anything else    a paragraph; **bold** and [text](https://... or mailto:...) work inline
@@ -54,6 +54,20 @@ PAGES = {
         "nav": [("/gamlog/ko/", "감록"), ("/support/#ko", "고객 지원")],
         "footer": "© 2026 Ongi Studio · 쿠키와 분석 도구를 쓰지 않아요.",
     },
+    "ja": {
+        "lang": "ja",
+        "src": "privacy-ja.md",
+        "out": "gamlog/privacy/ja/index.html",
+        "title": "柿ログ プライバシーポリシー",
+        "h1": "柿ログ プライバシーポリシー",
+        "description": "柿ログは血圧手帳をあなたのiPhoneの中にだけ保存します。アカウント、サーバー、分析ツール、広告はありません。",
+        "url": "https://ongistudio.app/gamlog/privacy/ja/",
+        "alternates": True,
+        "other": ("/gamlog/privacy/", "en", "English"),
+        "skip": "本文へスキップ",
+        "nav": [("/gamlog/", "GamLog"), ("/support/", "サポート")],
+        "footer": "© 2026 Ongi Studio · Cookieや分析ツールは使っていません。",
+    },
     "health": {
         "lang": "en",
         "src": "health-data-en.md",
@@ -71,7 +85,7 @@ PAGES = {
 }
 
 HEADING = re.compile(r"^\*\*(?P<text>[^*]+)\*\*$")
-UPDATED = re.compile(r"^(Last updated:|최종 수정일:)")
+UPDATED = re.compile(r"^(Last updated:|최종 수정일:|最終更新日：)")
 LINK = re.compile(r"\[(?P<text>[^\]]+)\]\((?P<url>(?:https://|mailto:)[^)\s]+)\)")
 BOLD = re.compile(r"\*\*(?P<text>[^*]+)\*\*")
 
@@ -98,7 +112,7 @@ def blocks(md: str) -> list[str]:
 def updated_line(md: str) -> str:
     second = blocks(md)[1]
     if not UPDATED.match(second):
-        raise ValueError("the second block must be the 'Last updated' / '최종 수정일' line")
+        raise ValueError("the second block must be the 'Last updated' / '최종 수정일' / '最終更新日' line")
     return second
 
 
@@ -128,7 +142,8 @@ def render(key: str, md: str) -> str:
         switch = f'\n      <li><a class="lang-switch" href="{other_href}" lang="{other_lang}" hreflang="{other_lang}">{other_label}</a></li>'
     alternates = ("""
 <link rel="alternate" hreflang="en" href="https://ongistudio.app/gamlog/privacy/">
-<link rel="alternate" hreflang="ko" href="https://ongistudio.app/gamlog/privacy/ko/">""" if p["alternates"] else "")
+<link rel="alternate" hreflang="ko" href="https://ongistudio.app/gamlog/privacy/ko/">
+<link rel="alternate" hreflang="ja" href="https://ongistudio.app/gamlog/privacy/ja/">""" if p["alternates"] else "")
     return f"""<!doctype html>
 <html lang="{lang}">
 <head>

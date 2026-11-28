@@ -85,7 +85,7 @@ class Structure(unittest.TestCase):
         for page in PAGES:
             with self.subTest(page=page.relative_to(ROOT)):
                 p = parse(page)
-                self.assertIn(p.html_lang, ("en", "ko"))
+                self.assertIn(p.html_lang, ("en", "ko", "ja"))
                 self.assertTrue(p.find("title"), "title")
                 self.assertTrue(p.meta("name", "description"), "meta description")
                 self.assertIn("width=device-width", p.meta("name", "viewport") or "")
@@ -174,7 +174,8 @@ class Links(unittest.TestCase):
         pairs = [(ROOT / "gamlog/index.html", "/gamlog/ko/"), (ROOT / "gamlog/ko/index.html", "/gamlog/"),
                  (ROOT / "splitpeak/index.html", "/splitpeak/ko/"), (ROOT / "splitpeak/ko/index.html", "/splitpeak/"),
                  (ROOT / "gamlog/privacy/index.html", "/gamlog/privacy/ko/"),
-                 (ROOT / "gamlog/privacy/ko/index.html", "/gamlog/privacy/")]
+                 (ROOT / "gamlog/privacy/ko/index.html", "/gamlog/privacy/"),
+                 (ROOT / "gamlog/privacy/ja/index.html", "/gamlog/privacy/")]
         for page, other in pairs:
             with self.subTest(page=page.relative_to(ROOT)):
                 self.assertTrue(parse(page).find("a", **{"class": "lang-switch", "href": other}))
@@ -469,3 +470,20 @@ class HealthData(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class JapanesePrivacy(unittest.TestCase):
+    """The Japanese policy page (added 2026-11-27) is listed everywhere the others are."""
+
+    def test_every_policy_lists_all_three_languages(self):
+        for page in ["gamlog/privacy/index.html", "gamlog/privacy/ko/index.html", "gamlog/privacy/ja/index.html"]:
+            text = (ROOT / page).read_text()
+            for lang, url in [("en", "/gamlog/privacy/"), ("ko", "/gamlog/privacy/ko/"), ("ja", "/gamlog/privacy/ja/")]:
+                with self.subTest(page=page, lang=lang):
+                    self.assertIn(f'hreflang="{lang}" href="{SITE}{url}"', text)
+
+    def test_japanese_page_is_japanese_and_in_the_sitemap(self):
+        p = parse(ROOT / "gamlog/privacy/ja/index.html")
+        self.assertEqual(p.html_lang, "ja")
+        self.assertIn(f"<loc>{SITE}/gamlog/privacy/ja/</loc>", (ROOT / "sitemap.xml").read_text())
+

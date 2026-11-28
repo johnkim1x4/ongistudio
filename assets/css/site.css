@@ -148,6 +148,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 :lang(ko) body, body:lang(ko) { font-family: var(--text-ko); word-break: keep-all; }
+:lang(ja) body, body:lang(ja) { font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", system-ui, sans-serif; line-break: strict; }
 img { max-width: 100%; height: auto; display: block; }
 a { color: var(--accent); text-underline-offset: 0.18em; text-decoration-thickness: 1.5px; }
 a:hover { text-decoration-thickness: 2.5px; }
@@ -155,6 +156,7 @@ a:hover { text-decoration-thickness: 2.5px; }
 
 h1, h2, h3 { font-family: var(--display); font-weight: 650; line-height: 1.12; letter-spacing: -0.01em; margin: 0 0 0.5em; text-wrap: balance; }
 :lang(ko) h1, :lang(ko) h2, :lang(ko) h3, h1:lang(ko), h2:lang(ko), h3:lang(ko) { font-family: var(--display-ko); font-weight: 400; letter-spacing: 0; line-height: 1.25; }
+:lang(ja) h1, :lang(ja) h2, :lang(ja) h3, h1:lang(ja), h2:lang(ja), h3:lang(ja) { font-family: "Hiragino Maru Gothic ProN", "Hiragino Sans", "Noto Sans JP", system-ui, sans-serif; font-weight: 700; letter-spacing: 0; line-height: 1.3; }
 h1 { font-size: clamp(2.2rem, 6.4vw, 4rem); }
 h2 { font-size: clamp(1.7rem, 4.2vw, 2.5rem); }
 h3 { font-size: 1.3rem; }
